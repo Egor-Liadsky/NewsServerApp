@@ -24,7 +24,7 @@ class NewsController(private val call: ApplicationCall) {
     }
 
     suspend fun getAllNews(page: Int, categoryId: Int) {
-        call.respond(HttpStatusCode.OK, daoNews.getAllNews(page, categoryId))
+        call.respond(HttpStatusCode.OK, daoNews.getAllNews(categoryId, page, pageSize = 4))
     }
 
     suspend fun getNews(id: Int) {

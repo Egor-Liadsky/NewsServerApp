@@ -30,9 +30,6 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.5.1")
 
-    // Logging
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")

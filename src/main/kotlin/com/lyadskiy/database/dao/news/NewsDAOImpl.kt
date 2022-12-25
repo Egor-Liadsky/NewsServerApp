@@ -6,6 +6,7 @@ import com.lyadskiy.dto.NewsDTOReceive
 import com.lyadskiy.dto.NewsFullDTOResponse
 import com.lyadskiy.dto.NewsListDTOResponse
 import com.lyadskiy.dto.NewsShortDTOResponse
+import com.lyadskiy.utils.Utils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -36,20 +37,17 @@ class NewsDAOImpl : NewsDAO {
 
     }
 
-    override suspend fun getAllNews(page: Int, categoryId: Int): NewsListDTOResponse = dbQuery {
-        val limit = 4
-        val pageSize: Long = 4
-        val skip: Long = (page.toLong() - 1) * pageSize
-
-        val newsEntity = NewsEntity.select { NewsEntity.categoryId eq categoryId }.limit(limit, offset = skip).map {
-            NewsShortDTOResponse(
-                id = it[NewsEntity.rowId],
-                title = it[NewsEntity.title],
-                date = it[NewsEntity.date],
-                shortDescription = it[NewsEntity.shortDescription]
-            )
-        }
-        println(newsEntity.count())
+    override suspend fun getAllNews(categoryId: Int, page: Int, pageSize: Int): NewsListDTOResponse = dbQuery {
+        val newsEntity = NewsEntity.select { NewsEntity.categoryId eq categoryId }
+            .limit(pageSize, offset = Utils.pagination(pageSize.toLong(), page))
+            .map {
+                NewsShortDTOResponse(
+                    id = it[NewsEntity.rowId],
+                    title = it[NewsEntity.title],
+                    date = it[NewsEntity.date],
+                    shortDescription = it[NewsEntity.shortDescription]
+                )
+            }
 
         return@dbQuery NewsListDTOResponse(
             code = 0,

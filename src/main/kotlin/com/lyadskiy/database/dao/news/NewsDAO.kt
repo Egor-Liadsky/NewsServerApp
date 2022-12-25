@@ -10,9 +10,10 @@ interface NewsDAO {
 
     suspend fun getNews(id: Int): NewsFullDTOResponse
 
-    suspend fun getAllNews(categoryId: Int): NewsListDTOResponse
+    suspend fun getAllNews(page: Int, categoryId: Int): NewsListDTOResponse
 
     suspend fun updateNews(id: Int, newsDTOReceive: NewsDTOReceive)
 
     suspend fun deleteNews(id: Int)
+
 }

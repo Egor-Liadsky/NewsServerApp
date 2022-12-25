@@ -2,7 +2,10 @@ package com.lyadskiy.database.dao.news
 
 import com.lyadskiy.database.DatabaseFactory.dbQuery
 import com.lyadskiy.database.entity.NewsEntity
-import com.lyadskiy.dto.*
+import com.lyadskiy.dto.NewsDTOReceive
+import com.lyadskiy.dto.NewsFullDTOResponse
+import com.lyadskiy.dto.NewsListDTOResponse
+import com.lyadskiy.dto.NewsShortDTOResponse
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -33,8 +36,12 @@ class NewsDAOImpl : NewsDAO {
 
     }
 
-    override suspend fun getAllNews(categoryId: Int): NewsListDTOResponse = dbQuery {
-        val newsEntity = NewsEntity.select { NewsEntity.categoryId eq categoryId }.map {
+    override suspend fun getAllNews(page: Int, categoryId: Int): NewsListDTOResponse = dbQuery {
+        val limit = 4
+        val pageSize: Long = 4
+        val skip: Long = (page.toLong() - 1) * pageSize
+
+        val newsEntity = NewsEntity.select { NewsEntity.categoryId eq categoryId }.limit(limit, offset = skip).map {
             NewsShortDTOResponse(
                 id = it[NewsEntity.rowId],
                 title = it[NewsEntity.title],
@@ -42,6 +49,7 @@ class NewsDAOImpl : NewsDAO {
                 shortDescription = it[NewsEntity.shortDescription]
             )
         }
+        println(newsEntity.count())
 
         return@dbQuery NewsListDTOResponse(
             code = 0,

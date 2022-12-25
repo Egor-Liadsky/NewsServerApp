@@ -16,12 +16,14 @@ fun Route.newsRouting() {
     get("/v1/news/categories/{categoryId?}/news") {
         val categoryId =
             call.parameters["categoryId"] ?: return@get call.respond(HttpStatusCode.NotFound, "Missing category id")
+        val page =
+            call.request.queryParameters["page"] ?: return@get call.respond(HttpStatusCode.NotFound, "Missing page")
         val newsController = NewsController(call)
-        newsController.getAllNews(categoryId.toInt())
+        newsController.getAllNews(page.toInt(), categoryId.toInt())
     }
 
-    get("/v1/news/{id?}") {
-        val id = call.parameters["id"] ?: return@get call.respond(HttpStatusCode.NotFound, "Missing id")
+    get("/v1/news") {
+        val id = call.request.queryParameters["id"] ?: return@get call.respond(HttpStatusCode.NotFound, "Missing id")
         val newsController = NewsController(call)
         newsController.getNews(id.toInt())
     }

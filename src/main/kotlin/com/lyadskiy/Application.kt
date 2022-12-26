@@ -7,12 +7,13 @@ import io.ktor.server.netty.*
 import com.lyadskiy.plugins.*
 
 fun main() {
-    embeddedServer(Netty, port = 8081, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8082, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
 fun Application.module() {
     DatabaseFactory.init()
+    configureKoin()
     configureSerialization()
     configureRouting()
 }

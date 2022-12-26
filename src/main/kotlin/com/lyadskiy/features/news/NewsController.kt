@@ -1,17 +1,14 @@
 package com.lyadskiy.features.news
 
-import com.lyadskiy.database.dao.news.daoNews
+import com.lyadskiy.database.dao.news.NewsDAO
 import com.lyadskiy.dto.NewsDTOReceive
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
+import com.lyadskiy.dto.NewsFullDTOResponse
+import com.lyadskiy.dto.NewsListDTOResponse
 
-class NewsController(private val call: ApplicationCall) {
+class NewsController(private val newsDAO: NewsDAO) {
 
-    suspend fun createNews(categoryId: Int) {
-        val newsReceive = call.receive<NewsDTOReceive>()
-        daoNews.createNews(
+    suspend fun createNews(categoryId: Int, newsReceive: NewsDTOReceive) {
+        newsDAO.createNews(
             categoryId,
             newsDTOReceive = NewsDTOReceive(
                 title = newsReceive.title,
@@ -20,20 +17,18 @@ class NewsController(private val call: ApplicationCall) {
                 fullDescription = newsReceive.fullDescription
             )
         )
-        call.respond(HttpStatusCode.Created, "News created")
     }
 
-    suspend fun getAllNews(page: Int, categoryId: Int) {
-        call.respond(HttpStatusCode.OK, daoNews.getAllNews(categoryId, page, pageSize = 4))
+    suspend fun getAllNews(page: Int, categoryId: Int): NewsListDTOResponse {
+        return newsDAO.getAllNews(categoryId, page, pageSize = 4)
     }
 
-    suspend fun getNews(id: Int) {
-        call.respond(HttpStatusCode.OK, daoNews.getNews(id))
+    suspend fun getNews(id: Int): NewsFullDTOResponse {
+        return newsDAO.getNews(id)
     }
 
-    suspend fun updateNews(id: Int) {
-        val newsReceive = call.receive<NewsDTOReceive>()
-        daoNews.updateNews(
+    suspend fun updateNews(id: Int, newsReceive: NewsDTOReceive) {
+        newsDAO.updateNews(
             id = id,
             newsDTOReceive = NewsDTOReceive(
                 title = newsReceive.title,
@@ -42,11 +37,9 @@ class NewsController(private val call: ApplicationCall) {
                 fullDescription = newsReceive.fullDescription
             )
         )
-        call.respond(HttpStatusCode.OK, "News updated")
     }
 
     suspend fun deleteNews(id: Int) {
-        daoNews.deleteNews(id)
-        call.respond(HttpStatusCode.OK, "News deleted")
+        newsDAO.deleteNews(id)
     }
 }

@@ -1,36 +1,28 @@
 package com.lyadskiy.features.categories
 
+import com.lyadskiy.database.dao.categories.CategoriesDAO
+import com.lyadskiy.dto.CategoriesListDTOResponse
 import com.lyadskiy.dto.CategoryDTOReceive
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import com.lyadskiy.database.dao.categories.daoCategories
-import io.ktor.http.*
-import io.ktor.server.response.*
 
-class CategoriesController(private val call: ApplicationCall) {
+class CategoriesController(private val categoriesDAO: CategoriesDAO) {
 
-    suspend fun createCategory() {
-        val categoryReceive = call.receive<CategoryDTOReceive>()
-        daoCategories.createCategory(
+    suspend fun createCategory(categoryDTOReceive: CategoryDTOReceive) {
+        categoriesDAO.createCategory(
             categoryDTOReceive = CategoryDTOReceive(
-                name = categoryReceive.name
+                name = categoryDTOReceive.name
             )
         )
-        call.respond(HttpStatusCode.Created, "Category created")
     }
 
-    suspend fun getCategories() {
-        call.respond(HttpStatusCode.OK, daoCategories.getCategories())
+    suspend fun getCategories(): CategoriesListDTOResponse {
+        return categoriesDAO.getCategories()
     }
 
-    suspend fun updateCategories(id: Int){
-        val categoryReceive = call.receive<CategoryDTOReceive>()
-        daoCategories.updateCategory(id, categoryReceive)
-        call.respond(HttpStatusCode.OK, "Category updated")
+    suspend fun updateCategories(id: Int, categoryDTOReceive: CategoryDTOReceive) {
+        categoriesDAO.updateCategory(id, categoryDTOReceive)
     }
 
-    suspend fun deleteCategory(id: Int){
-        daoCategories.deleteCategory(id)
-        call.respond(HttpStatusCode.OK, "Category deleted")
+    suspend fun deleteCategory(id: Int) {
+        categoriesDAO.deleteCategory(id)
     }
 }

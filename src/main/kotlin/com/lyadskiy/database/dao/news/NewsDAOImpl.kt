@@ -70,5 +70,3 @@ class NewsDAOImpl : NewsDAO {
         return@dbQuery
     }
 }
-
-val daoNews: NewsDAO = NewsDAOImpl()

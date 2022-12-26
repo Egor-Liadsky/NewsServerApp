@@ -47,5 +47,3 @@ class CategoriesDAOImpl : CategoriesDAO {
         return@dbQuery
     }
 }
-
-val daoCategories: CategoriesDAO = CategoriesDAOImpl()

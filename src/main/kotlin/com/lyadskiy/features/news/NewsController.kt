@@ -7,7 +7,7 @@ import com.lyadskiy.dto.NewsListDTOResponse
 
 class NewsController(private val newsDAO: NewsDAO) {
 
-    suspend fun createNews(categoryId: Int, newsReceive: NewsDTOReceive) {
+    suspend fun createNews(categoryId: Int, newsReceive: NewsDTOReceive): NewsDTOReceive {
         newsDAO.createNews(
             categoryId,
             newsDTOReceive = NewsDTOReceive(
@@ -16,6 +16,12 @@ class NewsController(private val newsDAO: NewsDAO) {
                 shortDescription = newsReceive.shortDescription,
                 fullDescription = newsReceive.fullDescription
             )
+        )
+        return NewsDTOReceive(
+            title = newsReceive.title,
+            date = newsReceive.date,
+            shortDescription = newsReceive.shortDescription,
+            fullDescription = newsReceive.fullDescription
         )
     }
 

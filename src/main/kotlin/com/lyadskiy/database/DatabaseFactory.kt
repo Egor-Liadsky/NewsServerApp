@@ -2,6 +2,7 @@ package com.lyadskiy.database
 
 import com.lyadskiy.database.entity.CategoriesEntity
 import com.lyadskiy.database.entity.NewsEntity
+import com.lyadskiy.database.entity.UsersEntity
 import com.lyadskiy.utils.Constants
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -19,7 +20,7 @@ object DatabaseFactory {
 
         transaction {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(CategoriesEntity, NewsEntity)
+            SchemaUtils.create(CategoriesEntity, NewsEntity, UsersEntity)
         }
     }
 

@@ -15,8 +15,7 @@ fun Route.newsRouting() {
     post("/v1/news/categories/{categoryId?}/news") {
         val categoryId = call.parameters["categoryId"] ?: return@post call.respond(HttpStatusCode.NotFound, "Missing category id")
         val newsReceive = call.receive<NewsDTOReceive>()
-        newsController.createNews(categoryId.toInt(), newsReceive)
-        call.respond(HttpStatusCode.Created, "News created")
+        call.respond(HttpStatusCode.Created, newsController.createNews(categoryId.toInt(), newsReceive))
     }
 
     get("/v1/news/categories/{categoryId?}/news") {
@@ -33,13 +32,11 @@ fun Route.newsRouting() {
     put("/v1/news/{id?}") {
         val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.NotFound, "Missing id")
         val newsReceive = call.receive<NewsDTOReceive>()
-        newsController.updateNews(id.toInt(), newsReceive)
-        call.respond(HttpStatusCode.OK, "News updated")
+        call.respond(HttpStatusCode.OK, newsController.updateNews(id.toInt(), newsReceive))
     }
 
     delete("/v1/news/{id?}") {
         val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.NotFound, "Missing id")
-        newsController.deleteNews(id.toInt())
-        call.respond(HttpStatusCode.OK, "News deleted")
+        call.respond(HttpStatusCode.OK, newsController.deleteNews(id.toInt()))
     }
 }

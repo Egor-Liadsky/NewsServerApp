@@ -13,8 +13,8 @@ fun main() {
 
 fun Application.module() {
     DatabaseFactory.init()
-    configureGraphQL()
     configureKoin()
+    configureGraphQL()
     configureSerialization()
     configureRouting()
 }

@@ -7,7 +7,7 @@ import com.lyadskiy.dto.NewsListDTOResponse
 
 class NewsController(private val newsDAO: NewsDAO) {
 
-    suspend fun createNews(categoryId: Int, newsReceive: NewsDTOReceive): NewsDTOReceive {
+    suspend fun createNews(categoryId: Int, newsReceive: NewsDTOReceive): String {
         newsDAO.createNews(
             categoryId,
             newsDTOReceive = NewsDTOReceive(
@@ -17,12 +17,7 @@ class NewsController(private val newsDAO: NewsDAO) {
                 fullDescription = newsReceive.fullDescription
             )
         )
-        return NewsDTOReceive(
-            title = newsReceive.title,
-            date = newsReceive.date,
-            shortDescription = newsReceive.shortDescription,
-            fullDescription = newsReceive.fullDescription
-        )
+        return "News created"
     }
 
     suspend fun getAllNews(page: Int, categoryId: Int): NewsListDTOResponse {
@@ -33,7 +28,7 @@ class NewsController(private val newsDAO: NewsDAO) {
         return newsDAO.getNews(id)
     }
 
-    suspend fun updateNews(id: Int, newsReceive: NewsDTOReceive) {
+    suspend fun updateNews(id: Int, newsReceive: NewsDTOReceive): String {
         newsDAO.updateNews(
             id = id,
             newsDTOReceive = NewsDTOReceive(
@@ -43,9 +38,11 @@ class NewsController(private val newsDAO: NewsDAO) {
                 fullDescription = newsReceive.fullDescription
             )
         )
+        return "News with id $id updated"
     }
 
-    suspend fun deleteNews(id: Int) {
+    suspend fun deleteNews(id: Int): String {
         newsDAO.deleteNews(id)
+        return "News with id $id deleted"
     }
 }

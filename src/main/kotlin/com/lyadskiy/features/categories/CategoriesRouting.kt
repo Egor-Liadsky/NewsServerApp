@@ -3,6 +3,7 @@ package com.lyadskiy.features.categories
 import com.lyadskiy.dto.CategoryDTOReceive
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -19,10 +20,6 @@ fun Route.categoriesRouting() {
         call.respond(HttpStatusCode.Created, "Category created")
     }
 
-    get("/v1/news/categories") {
-        call.respond(HttpStatusCode.OK, categoriesController.getCategories())
-    }
-
     put("/v1/news/categories/{id?}") {
         val categoryReceive = call.receive<CategoryDTOReceive>()
         val id = call.parameters["id"] ?: return@put call.respond(HttpStatusCode.NotFound, "Missing id")
@@ -34,5 +31,9 @@ fun Route.categoriesRouting() {
         val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.NotFound, "Missing id")
         categoriesController.deleteCategory(id.toInt())
         call.respond(HttpStatusCode.OK, "Category deleted")
+    }
+
+    get("/v1/news/categories") {
+        call.respond(HttpStatusCode.OK, categoriesController.getCategories())
     }
 }

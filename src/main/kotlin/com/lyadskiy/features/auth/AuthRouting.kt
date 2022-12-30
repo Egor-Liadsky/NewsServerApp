@@ -7,13 +7,14 @@ import com.lyadskiy.security.token.TokenConfig
 import com.lyadskiy.security.token.TokenService
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.authRouting(tokenConfig: TokenConfig, userDAO: UserDAO, tokenService: TokenService) {
-
-    post("/register") {
+    
+    post("user/register") {
         val userReceive = call.receive<UserReceive>()
 
         userDAO.registerUser(userReceive)
@@ -25,7 +26,7 @@ fun Route.authRouting(tokenConfig: TokenConfig, userDAO: UserDAO, tokenService: 
         call.respond(HttpStatusCode.OK, token)
     }
 
-    post("/login") {
+    post("user/login") {
         val userReceive = call.receive<UserReceive>()
         try {
             val user = userDAO.authUser(userReceive)
@@ -41,6 +42,36 @@ fun Route.authRouting(tokenConfig: TokenConfig, userDAO: UserDAO, tokenService: 
             }
         } catch (ex: Exception) {
             call.respond(HttpStatusCode.Conflict, "A user with this username was not found")
+        }
+    }
+
+    authenticate("auth-jwt") {
+
+        get("users") {
+            call.respond(HttpStatusCode.OK, userDAO.getUsers())
+        }
+
+        get("users/{id?}") {
+            val id = call.parameters["id"] ?: return@get call.respond(HttpStatusCode.NotFound, "Missing user with id")
+            call.respond(HttpStatusCode.OK, userDAO.getUser(id.toInt()))
+        }
+
+        put("user/{id?}") {
+            val id =
+                call.parameters["id"] ?: return@put call.respond(HttpStatusCode.NotFound, "Missing user with this id")
+            val user = call.receive<UserReceive>()
+            userDAO.updateUser(id.toInt(), user)
+            call.respond(HttpStatusCode.OK, "User updated")
+        }
+
+        delete("user/{id?}") {
+            val id =
+                call.parameters["id"] ?: return@delete call.respond(
+                    HttpStatusCode.NotFound,
+                    "Missing user with this id"
+                )
+            userDAO.deleteUser(id.toInt())
+            call.respond(HttpStatusCode.OK, "User deleted")
         }
     }
 }

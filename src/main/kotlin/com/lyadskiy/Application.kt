@@ -1,8 +1,10 @@
 package com.lyadskiy
 
 import com.lyadskiy.database.DatabaseFactory
+import com.lyadskiy.database.dao.users.UserDAOImpl
 import com.lyadskiy.plugins.*
 import com.lyadskiy.security.token.TokenConfig
+import com.lyadskiy.security.token.TokenServiceImpl
 import io.ktor.server.application.*
 
 fun main(args: Array<String>): Unit =
@@ -23,6 +25,6 @@ fun Application.module() {
     configureMonitoring()
     configureGraphQL()
     configureSerialization()
-    configureRouting(tokenConfig)
     configureSecurity(tokenConfig)
+    configureRouting(tokenConfig, UserDAOImpl(), TokenServiceImpl())
 }

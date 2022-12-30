@@ -1,31 +1,47 @@
 package com.lyadskiy.features.auth
 
-import com.lyadskiy.database.dao.users.UserDAOImpl
+import com.lyadskiy.database.dao.users.UserDAO
 import com.lyadskiy.dto.UserReceive
+import com.lyadskiy.security.token.TokenClaim
 import com.lyadskiy.security.token.TokenConfig
-import com.lyadskiy.security.token.TokenServiceImpl
+import com.lyadskiy.security.token.TokenService
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-
-fun Route.authRouting(tokenConfig: TokenConfig) {
-
-//    val authController by inject<AuthController>()
-    val authController = AuthController(UserDAOImpl(), TokenServiceImpl(), tokenConfig)
+fun Route.authRouting(tokenConfig: TokenConfig, userDAO: UserDAO, tokenService: TokenService) {
 
     post("/register") {
         val userReceive = call.receive<UserReceive>()
-        call.respond(HttpStatusCode.OK, authController.registerUser(userReceive))
+
+        userDAO.registerUser(userReceive)
+        val token = tokenService.generateJWTToken(
+            tokenConfig,
+            TokenClaim(name = "username", value = userReceive.username),
+            TokenClaim(name = "password", value = userReceive.password)
+        )
+        call.respond(HttpStatusCode.OK, token)
     }
 
-    post("/login"){
+    post("/login") {
         val userReceive = call.receive<UserReceive>()
-        call.respond(HttpStatusCode.OK, authController.loginUser(userReceive))
+        try {
+            val user = userDAO.authUser(userReceive)
+            if (userReceive.password == user.password) {
+                val token = tokenService.generateJWTToken(
+                    tokenConfig,
+                    TokenClaim(name = "username", value = userReceive.username),
+                    TokenClaim(name = "password", value = userReceive.password)
+                )
+                call.respond(HttpStatusCode.OK, token)
+            } else {
+                call.respond(HttpStatusCode.Conflict, "Invalid password")
+            }
+        } catch (ex: Exception) {
+            call.respond(HttpStatusCode.Conflict, "A user with this username was not found")
+        }
     }
 }
+

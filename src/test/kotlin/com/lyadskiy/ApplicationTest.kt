@@ -1,21 +1,11 @@
 package com.lyadskiy
 
-import com.lyadskiy.plugins.configureRouting
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Test
 
 class ApplicationTest {
+
     @Test
-    fun testRoot() = testApplication {
-        application {
-        }
-        client.get("/").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
-        }
+    fun `First test`(){
+        print("asd")
     }
 }

@@ -4,6 +4,9 @@ val logback_version: String by project
 val exposed_version: String by project
 val koin_version: String by project
 val postgresql_version: String by project
+val kgraphql_version: String by project
+val authentication_version: String by project
+val junit_version: String by project
 
 plugins {
     kotlin("jvm") version "1.7.22"
@@ -43,13 +46,17 @@ dependencies {
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
     // GraphQL
-    implementation("com.apurebase:kgraphql:0.18.1")
-    implementation("com.apurebase:kgraphql-ktor:0.18.1")
+    implementation("com.apurebase:kgraphql:$kgraphql_version")
+    implementation("com.apurebase:kgraphql-ktor:$kgraphql_version")
 
     // Authentication
-    implementation("io.ktor:ktor-server-auth-jvm:2.2.1")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.2.1")
+    implementation("io.ktor:ktor-server-auth-jvm:$authentication_version")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:$authentication_version")
     implementation("commons-codec:commons-codec:1.15")
+
+    // Test
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")

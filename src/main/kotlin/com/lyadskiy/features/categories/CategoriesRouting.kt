@@ -37,5 +37,6 @@ fun Route.categoriesRouting() {
             categoriesController.deleteCategory(id.toInt())
             call.respond(HttpStatusCode.OK, "Category deleted")
         }
+
     }
 }

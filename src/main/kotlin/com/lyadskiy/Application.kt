@@ -29,3 +29,4 @@ fun Application.module() {
     configureSecurity(tokenConfig)
     configureRouting(tokenConfig, UserDAOImpl(), TokenServiceImpl())
 }
+
